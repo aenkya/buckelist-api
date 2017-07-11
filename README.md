@@ -1,5 +1,4 @@
 # Bucketlist API
-============
 
 [![Build Status](https://travis-ci.org/Elbertbiggs360/buckelist-api.svg?branch=master)](https://travis-ci.org/Elbertbiggs360/buckelist-api)
 [![Coverage Status](https://coveralls.io/repos/github/Elbertbiggs360/buckelist-api/badge.svg?branch=master)](https://coveralls.io/github/Elbertbiggs360/buckelist-api?branch=master)
@@ -10,12 +9,23 @@ to create a REST API backend to be used to compute commissions and float values
 for agents of mobile money services
 
 ## Demo
-You can request a demo from brucebigirwenkya@gmail.com
+You can request a demo from @elbertbiggs360 on twitter
 
 You can also test the API demo hosted at https://burketlist.herokuapp.com in Postman
-Use a request to the url with extension 
-- GET `/branches` to get a list of the available mm branches
-- GET `/rates` to get a list of the transaction rates
+
+##Usage
+| Endpoint                                    | Public Access |
+| --------------------------------------------|:-------------:|
+| POST /auth/login                            |    TRUE       |
+| POST /auth/register                         |    TRUE       |
+| POST /bucketlists/                          |    FALSE      |
+| GET /bucketlists/                           |    FALSE      |
+| GET /bucketlists/<id>                       |    FALSE      |
+| PUT /bucketlists/<id>                       |    FALSE      |
+| DELETE /bucketlists/<id>                    |    FALSE      |
+| POST /bucketlists/<id>/items/               |    FALSE      |
+| PUT /bucketlists/<id>/items/<item_id>       |    FALSE      |
+| DELETE /bucketlists/<id>/items/<item_id>    |    FALSE      |
 
 ---
 
