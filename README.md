@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/Elbertbiggs360/buckelist-api.svg?branch=master)](https://travis-ci.org/Elbertbiggs360/buckelist-api)
 [![Coverage Status](https://coveralls.io/repos/github/Elbertbiggs360/buckelist-api/badge.svg?branch=master)](https://coveralls.io/github/Elbertbiggs360/buckelist-api?branch=master)
-
+[![Code Climate](https://codeclimate.com/github/Elbertbiggs360/buckelist-api/badges/gpa.svg)](https://codeclimate.com/github/Elbertbiggs360/buckelist-api)
+[![Issue Count](https://codeclimate.com/github/Elbertbiggs360/buckelist-api/badges/issue_count.svg)](https://codeclimate.com/github/Elbertbiggs360/buckelist-api)
 
 This is a python application using SQLAlchemy and Flask 
 to create a REST API backend to be used to compute commissions and float values
@@ -14,8 +15,8 @@ You can request a demo from @elbertbiggs360 on twitter
 You can also test the API demo hosted at https://burketlist.herokuapp.com in Postman
 
 ##Usage
-| Endpoint                                    | Public Access |
-| --------------------------------------------|:-------------:|
+| **Endpoint**                                | Public Access |
+| --------------------------------------------| -------------:|
 | POST /auth/login                            |    TRUE       |
 | POST /auth/register                         |    TRUE       |
 | POST /bucketlists/                          |    FALSE      |
