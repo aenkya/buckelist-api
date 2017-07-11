@@ -1,0 +1,7 @@
+*.sublime-workspace
+*.sublime-project
+*/files/*.txt
+*/__pycache__
+*.pyc
+/practice
+*.sqlite
