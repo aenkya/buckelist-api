@@ -5,9 +5,10 @@ class Config(object):
     """Parent configuration class"""
     DEBUG = False
     CSRF_ENABLED = True
-    SECRET = os.getenv('SECRET')  # SECRET = 'HeathLEDGERwasTHEBESTidc'
-    # SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/flask_api'
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    # ALT: <variable> = os.getenv('<env_var_name>')
+    SECRET = 'HeathLEDGERwasTHEBESTidc'
+    # database with host configuration removed. Defaults to machine localhost
+    SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/bucketlist_api"
 
 
 class DevelopmentConfig(Config):
@@ -18,7 +19,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Configurations for Testing with a separate test database"""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/test_db'
+    SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/test_db"
     DEBUG = True
 
 
