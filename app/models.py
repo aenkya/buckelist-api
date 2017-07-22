@@ -4,7 +4,7 @@ from app import db
 class Bucketlist(db.Model):
     '''This class represents the bucketlist model'''
 
-    __table__name = 'bucketlists'
+    __table__name = 'bucketlist'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
