@@ -15,18 +15,21 @@ You can request a demo from @elbertbiggs360 on twitter
 You can also test the API demo hosted at https://burketlist.herokuapp.com in Postman
 
 ##Usage
-| **Endpoint**                                | Public Access |
-| --------------------------------------------| -------------:|
-| POST /auth/login                            |    TRUE       |
-| POST /auth/register                         |    TRUE       |
-| POST /bucketlists/                          |    FALSE      |
-| GET /bucketlists/                           |    FALSE      |
-| GET /bucketlists/<id>                       |    FALSE      |
-| PUT /bucketlists/<id>                       |    FALSE      |
-| DELETE /bucketlists/<id>                    |    FALSE      |
-| POST /bucketlists/<id>/items/               |    FALSE      |
-| PUT /bucketlists/<id>/items/<item_id>       |    FALSE      |
-| DELETE /bucketlists/<id>/items/<item_id>    |    FALSE      |
+
+| EndPoint | Functionality | Public Access |
+| -------- | ------------- | ------------- |
+| [ POST /auth/login ](#) | Logs a user in | TRUE |
+| [ POST /auth/register ](#) | Register a user | TRUE |
+| [ POST /bucketlists/ ](#) | Create a new bucket list | FALSE |
+| [ GET /bucketlists/ ](#) | List all the created bucket lists | FALSE |
+| [ GET /bucketlists/\<id> ](#) | Get single bucket list | FALSE |
+| [ PUT /bucketlists/\<id> ](#) | Update this bucket list | FALSE |
+| [ DELETE /bucketlists/\<id> ](#) | Delete this single bucket list | FALSE |
+| [ POST /bucketlists/\<id>/items/ ](#) | Create a new item in bucket list | FALSE |
+| [ PUT /bucketlists/\<id>/items/<item_id> ](#) | Update a bucket list item | FALSE |
+| [ DELETE /bucketlists/\<id>/items/<item_id> ](#) | Delete an item in a bucket list | FALSE |
+| [ GET /bucketlists?limit=\<number> ](#) | Gets a number of bucket lists relative to the value passed in number. Maximum records is 100 | FALSE |
+| [ GET /bucketlists?q=\<bucketlist_name> ](#) | Search for bucket list with the same name as that passed in bucketlist_name | FALSE |
 
 ---
 
