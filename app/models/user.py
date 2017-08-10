@@ -1,4 +1,4 @@
-from flask_restful import json
+from flask_restplus import json
 from flask_bcrypt import Bcrypt
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
@@ -54,6 +54,20 @@ class User(BaseModel):
         except BadSignature:
             return False
         return data['id'] if data['id'] else False
+
+    def delete_user(self):
+        ''' Method to delete user '''
+        if self.exists():
+            self.delete()
+            return True
+        return False
+
+    def save_user(self):
+        ''' Method to save user '''
+        if not self.exists():
+            self.save()
+            return True
+        return False
 
     def __repr__(self):
         return '<User %r>' % self.name()
