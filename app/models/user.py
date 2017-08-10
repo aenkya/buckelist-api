@@ -26,10 +26,12 @@ class User(BaseModel):
 
     @password.setter
     def password(self, password):
+        ''' Generate password hash '''
         self._password_hash = bcrypt.generate_password_hash(
             password, Config.BCRYPT_LOG_ROUNDS).decode()
 
     def exists(self):
+        ''' Check if user exists '''
         return True if User.query.filter_by(email=self.email).first() else False
 
     def verify_password(self, password):
@@ -40,6 +42,18 @@ class User(BaseModel):
         ''' Method for generating a JWT authentication token '''
         serializer = Serializer(Config.SECRET_KEY, expires_in=int(duration))
         return serializer.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_authentication_token(token):
+        ''' Method to verify authentication token '''
+        serializer = Serializer(Config.SECRET_KEY)
+        try:
+            data = serializer.loads(token)
+        except SignatureExpired:
+            return False
+        except BadSignature:
+            return False
+        return data['id'] if data['id'] else False
 
     def __repr__(self):
         return '<User %r>' % self.name()
