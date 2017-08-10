@@ -9,11 +9,13 @@ class Config(object):
     SECRET = 'HeathLEDGERwasTHEBESTidc'
     # database with host configuration removed. Defaults to machine localhost
     SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/bucketlist_api"
+    BCRYPT_LOG_ROUNDS = 13
 
 
 class DevelopmentConfig(Config):
     """Configurations for Development"""
     DEBUG = True
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class TestingConfig(Config):
@@ -21,6 +23,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/test_db"
     DEBUG = True
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class StagingConfig(Config):
