@@ -6,10 +6,13 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     # ALT: <variable> = os.getenv('<env_var_name>')
-    SECRET = 'HeathLEDGERwasTHEBESTidc'
+    __SECRET = 'HeathLEDGERwasTHEBESTidc'
     # database with host configuration removed. Defaults to machine localhost
-    SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/bucketlist_api"
+    __DB_NAME = "postgresql://bruce:Inline-360@localhost/bucketlist_api"
     BCRYPT_LOG_ROUNDS = 13
+    SECRET_KEY = os.getenv('SECRET') or __SECRET
+    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
+    SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __DB_NAME
 
 
 class DevelopmentConfig(Config):
