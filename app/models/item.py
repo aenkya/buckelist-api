@@ -12,6 +12,17 @@ class Item(BaseModel):
     bucketlist_id = db.Column(db.Integer,
                               db.ForeignKey('bucketlist.id'), nullable=False)
 
+    def save_item(self):
+        ''' method to save bucketlist item '''
+        self.add_data_set()
+        return True
+
+    def delete_item(self):
+        ''' method to delete bucketlist item '''
+        self.delete_data_set()
+        db.session.commit()
+        return True
+
     def __repr__(self):
         return "<Item: {}>".format(self.name)
 
