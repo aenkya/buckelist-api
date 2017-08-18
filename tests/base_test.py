@@ -69,15 +69,19 @@ class BaseCase(TestCase):
         ''' method generates auth headers for test user '''
         path = '/api/v1/auth/login'
         data = {'email': email, 'password': password}
-        response = self.client.post(
+        response = self.post_data(path, data)
+        result = json.loads(response.data)
+        self.assertTrue(result['auth_token'])
+        return {'x-access-token': result['auth_token']}
+
+    def post_data(self, path, data):
+        ''' method to pass data to API path given '''
+        return self.client.post(
             path,
             data=json.dumps(data),
             content_type='application/json',
             follow_directs=True
         )
-        result = json.loads(response.data)
-        self.assertTrue(result['auth_token'])
-        return {'x-access-token': result['auth_token']}
 
     def tearDown(self):
         super(BaseCase, self).tearDown()
