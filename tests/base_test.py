@@ -1,9 +1,10 @@
 from flask_testing import TestCase
-from datetime import date
 import json
 
 from app import db, create_app
 from app.models.user import User
+from app.models.bucketlist import Bucketlist
+from app.models.item import Item
 
 
 class BaseCase(TestCase):
@@ -22,6 +23,21 @@ class BaseCase(TestCase):
             db.drop_all()
             db.create_all()
 
+        self.user_1 = User(
+            first_name='Ezekiel',
+            last_name='Mugaya',
+            email='emugaya@andela.com',
+            password='test',
+            confirm_password='test'
+        )
+        self.user_2 = User(
+            first_name='Paul',
+            last_name='Nyondo',
+            email='pnyondo@andela.com',
+            password='test',
+            confirm_password='test'
+        )
+
         self.populate_db()
 
     def populate_db(self):
@@ -30,24 +46,10 @@ class BaseCase(TestCase):
         self.add_test_items()
 
     @staticmethod
-    def add_test_users():
+    def add_test_users(self):
         ''' method to add test users to db '''
-        user_1 = User(
-            first_name: 'Ezekiel',
-            last_name: 'Mugaya',
-            email: 'emugaya@andela.com',
-            password: 'test',
-            confirm_password: 'test'
-        )
-        user_2 = User(
-            first_name: 'Paul',
-            last_name: 'Nyondo',
-            email: 'pnyondo@andela.com',
-            password: 'test',
-            confirm_password: 'test'
-        )
-        user_1.save_user()
-        user_2.save_user()
+        self.user_1.save_user()
+        self.user_2.save_user()
 
     @staticmethod
     def add_test_bucketlists():
