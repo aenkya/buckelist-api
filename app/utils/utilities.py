@@ -1,15 +1,13 @@
 from re import search
-from flask import g
-from flask_restplus import abort
-from flask_httpauth import HTTPBasicAuth
+from flask import g, request
+from flask_httpauth import HTTPTokenAuth
 from app.models.user import User
-from instance.config import Config
 
-auth = HTTPBasicAuth()
+auth = HTTPTokenAuth(scheme='Token')
 
 
 def validate_email(email):
-	''' Method to check that a valid email is provided '''
+    ''' Method to check that a valid email is provided '''
     email_re = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return True if search(email_re, email) else False
 
@@ -19,6 +17,6 @@ def verify_token(token=None):
     token = request.headers.get('x-access-token')
     user_id = User.verify_authentication_token(token)
     if user_id:
-        g.current_user = User.query.filter_by(id=user.id).first()
+        g.current_user = User.query.filter_by(id=user_id).first()
         return True
     return False
