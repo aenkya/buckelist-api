@@ -1,12 +1,15 @@
-from flask import Flask, Blueprint, abort
-from flask_restplus import Api, Resource, fields
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, Blueprint
+from flask_restplus import Api
+from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 
 
 from instance.config import app_config
+from app.api.bucketlist import bucketlist_api
+from app.api.auth import auth_api
+from .models.baseModel import db
 
-# Create db instance
-db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 # Create v1 blueprint for api
 api_v1 = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -14,11 +17,8 @@ api_v1 = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(api_v1, version='1.0', title='BucketList API',
           description='api to allow the creation & control of bucketlists')
 
-
-ns = api.namespace('bucketlists', description='Bucketlists operations')
-api.init_app(api_v1)
-
-BUCKETLISTS = {}
+api.add_namespace(bucketlist_api)
+api.add_namespace(auth_api)
 
 
 def create_app(config_name):
@@ -30,15 +30,10 @@ def create_app(config_name):
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    CORS(app)
+
     app.register_blueprint(api_v1)
     db.init_app(app)
+    bcrypt.init_app(app)
 
     return app
-
-
-def abort_if_bucketlist_doesnt_exist(bucketlist_id):
-    '''abort with 404 if bucketlist doesnt exist'''
-    from app.models.bucketlist import Bucketlist
-    bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
-    if not bucketlist:
-        abort(404)
