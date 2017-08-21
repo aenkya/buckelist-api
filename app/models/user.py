@@ -1,12 +1,11 @@
-from flask_restplus import json
+import json
 from flask_bcrypt import Bcrypt
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
     BadSignature, SignatureExpired
 )
 
-from app.models.baseModel import BaseModel
-from app import db
+from app.models.baseModel import BaseModel, db
 from instance.config import Config
 
 bcrypt = Bcrypt()

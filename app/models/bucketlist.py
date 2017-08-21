@@ -1,5 +1,4 @@
-from app.models.baseModel import BaseModel
-from app import db
+from app.models.baseModel import BaseModel, db
 
 
 class Bucketlist(BaseModel):
