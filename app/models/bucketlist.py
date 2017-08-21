@@ -16,6 +16,13 @@ class Bucketlist(BaseModel):
         '''get all bucketlist items'''
         return Bucketlist.query.all()
 
+    def save_bucketlist(self):
+        ''' Method to save user '''
+        if not self.exists():
+            self.save()
+            return True
+        return False
+
     def __repr__(self):
         return "<Bucketlist: {}>".format(self.name)
 
