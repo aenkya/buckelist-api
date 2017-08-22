@@ -1,3 +1,4 @@
+import os
 from flask import Flask, Blueprint
 from flask_restplus import Api
 from flask_cors import CORS
@@ -37,3 +38,5 @@ def create_app(config_name):
     bcrypt.init_app(app)
 
     return app
+
+my_app = create_app(config_name=os.getenv('APP_SETTINGS') or 'development')

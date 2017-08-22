@@ -17,10 +17,6 @@ class BaseModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def __init__(self, name):
-        '''initialize with name'''
-        self.name = name
-
     def save(self):
         '''save data to database'''
         db.session.add(self)
