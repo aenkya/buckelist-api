@@ -1,21 +1,22 @@
-from flask_testing import TestCase
+import unittest
 import json
 
-from app import db, create_app
+from app import create_app
+from app.models.baseModel import db
 from app.models.user import User
 from app.models.bucketlist import Bucketlist
 from app.models.item import Item
 
 
-class BaseCase(TestCase):
+class BaseCase(unittest.TestCase):
     ''' A class detailing the base properties to be inherited '''
     @staticmethod
-    def create_app(self):
-        return create_app('testing')
+    def create_new_app():
+        return create_app(config_name='testing')
 
     def setUp(self):
         super(BaseCase, self).setUp()
-        self.app = self.create_app()
+        self.app = self.create_new_app()
         self.client = self.app.test_client
 
         with self.app.app_context():
@@ -37,7 +38,8 @@ class BaseCase(TestCase):
             password='test',
             confirm_password='test'
         )
-
+        self.bucketlist_data = {'name': 'Go fishing'}
+        self.item_data = {'name': 'Gokarting'}
         self.populate_db()
 
     def populate_db(self):
@@ -45,7 +47,6 @@ class BaseCase(TestCase):
         self.add_test_bucketlists()
         self.add_test_items()
 
-    @staticmethod
     def add_test_users(self):
         ''' method to add test users to db '''
         self.user_1.save_user()
@@ -87,5 +88,6 @@ class BaseCase(TestCase):
 
     def tearDown(self):
         super(BaseCase, self).tearDown()
-        db.session.remove()
-        db.drop_all()
+        with self.app.app_context():
+            db.session.remove()
+            db.drop_all()

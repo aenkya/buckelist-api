@@ -1,5 +1,4 @@
 import json
-import base64
 
 from tests.base_test import BaseCase
 

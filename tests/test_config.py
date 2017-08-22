@@ -1,14 +1,12 @@
-from flask_testing import TestCase
+import unittest
 
 from app import create_app
 
-config_name = 'testing'
 
-
-class TestConfig(TestCase):
+class TestConfig(unittest.TestCase):
     ''' test that app is initialized with right configurations '''
-    def create_app():
-        return create_app(config_name)
+    def create_app(self):
+        return create_app(config_name='testing')
 
     def setUp(self):
         self.app = self.create_app()
