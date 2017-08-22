@@ -18,29 +18,29 @@ class BaseCase(unittest.TestCase):
         super(BaseCase, self).setUp()
         self.app = self.create_new_app()
         self.client = self.app.test_client
+        self._password = 'test'
+
+        self.bucketlist_data = {'name': 'Go fishing'}
+        self.item_data = {'name': 'Gokarting'}
 
         with self.app.app_context():
             db.session.close()
             db.drop_all()
             db.create_all()
-
-        self.user_1 = User(
-            first_name='Ezekiel',
-            last_name='Mugaya',
-            email='emugaya@andela.com',
-            password='test',
-            confirm_password='test'
-        )
-        self.user_2 = User(
-            first_name='Paul',
-            last_name='Nyondo',
-            email='pnyondo@andela.com',
-            password='test',
-            confirm_password='test'
-        )
-        self.bucketlist_data = {'name': 'Go fishing'}
-        self.item_data = {'name': 'Gokarting'}
-        self.populate_db()
+            
+            self.user_1 = User(
+                first_name='Ezekiel',
+                last_name='Mugaya',
+                email='emugaya@andela.com',
+                password=self._password
+            )
+            self.user_2 = User(
+                first_name='Paul',
+                last_name='Nyondo',
+                email='pnyondo@andela.com',
+                password=self._password
+            )
+            self.populate_db()
 
     def populate_db(self):
         self.add_test_users()
