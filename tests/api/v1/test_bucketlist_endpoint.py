@@ -6,10 +6,6 @@ from tests.base_test import BaseCase
 class TestBucketlistEndpoint(BaseCase):
     ''' A class to test the bucketlist endpoints '''
 
-    def setUp(self):
-        super(BaseCase, self).setUp()
-        self.bucketlist_data = {'name': 'Go fishing'}
-
     def test_post_bucketlists_adds_new_bucketlist(self):
         ''' add bucketlist with post route '''
         self.add_test_users()

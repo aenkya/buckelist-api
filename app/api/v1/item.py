@@ -1,9 +1,9 @@
 """ Routes for bucket_item Functionality"""
-# from flask import g
-# from flask import Blueprint, request, jsonify
+from flask import g
+from flask import Blueprint, request, jsonify
 from flask_restplus import fields
-# from app.models.bucketlist import Bucketlist
-# from app import api
+from app.models.bucketlist import Bucketlist
+from app import api
 
 item_fields = {
     'id': fields.Integer,
