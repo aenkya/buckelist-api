@@ -5,23 +5,28 @@ from app import db
 class Item(BaseModel):
     '''This class represents the item model'''
 
-    __table__name = 'item'
-
     name = db.Column(db.Text, nullable=False)
     done = db.Column(db.Boolean, default=False)
     bucketlist_id = db.Column(db.Integer,
                               db.ForeignKey('bucketlist.id'), nullable=False)
 
-    def save_item(self):
-        ''' method to save bucketlist item '''
-        self.add_data_set()
-        return True
-
     def delete_item(self):
-        ''' method to delete bucketlist item '''
-        self.delete_data_set()
-        db.session.commit()
-        return True
+        ''' Method to delete item '''
+        if self.exists():
+            self.delete()
+            return True
+        return False
+
+    def save_item(self):
+        ''' Method to save item '''
+        if not self.exists():
+            self.save()
+            return True
+        return False
+
+    def exists(self):
+        ''' Check if item exists '''
+        return True if Item.query.filter_by(name=self.name).first() else False
 
     def __repr__(self):
         return "<Item: {}>".format(self.name)

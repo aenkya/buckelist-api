@@ -1,4 +1,3 @@
-import json
 from flask_bcrypt import Bcrypt
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
