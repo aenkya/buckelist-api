@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, g
 from flask_restplus import abort, Resource, Namespace, fields
 from app.models.user import User
 from app.utils.utilities import validate_email
@@ -38,9 +38,9 @@ class RegisterUser(Resource):
             'password'), arguments.get('password_confirm')
 
         if not validate_email(email):
-            return abort(401, message='email address is invalid.')
+            return abort(400, message='email address is invalid.')
         if password != password_confirm:
-            return abort(401, message='Password doesn\'t match confirmation')
+            return abort(400, message='Password doesn\'t match confirmation')
         if not first_name or not last_name:
             return abort(400, 'First Name AND Last Name should be provided')
 
@@ -57,3 +57,34 @@ class RegisterUser(Resource):
                 return response, 409
         except Exception as e:
             abort(400, 'Error while creating your account: {}'.format(e))
+
+
+@auth_api.route('/login', endpoint='login')
+class AuthenticateUser(Resource):
+
+    def post(self):
+        arguments = request.get_json(force=True)
+        email, password = arguments.get('email'), arguments.get('password')
+
+        if not validate_email(email):
+            return abort(400, message='Please provide valid email credentials.')
+        user = User.query.filter_by(email=email).first()
+        try:
+            if not user:
+                return {'message': 'Email not found'}, 400
+            if user.verify_password(password):
+                token = user.generate_auth_token()
+                g.user, g.token = user, token.decode('utf-8')
+                if token:
+                    return {'token': g.token}, 200
+            return {'message': 'Wrong password'}, 401
+        except Exception as e:
+            return abort(500, 'Error logging in user:{}'.format(e.message))
+
+
+# class Logout(Resource):
+
+#     @auth_api.login_required
+#     def get(self):
+#         g.user = None
+#         return {'message': 'ok'}, 200

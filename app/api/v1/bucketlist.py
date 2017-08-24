@@ -33,8 +33,7 @@ class BucketlistsEndPoint(Resource):
             }
             results.append(obj)
         response = jsonify(results)
-        response.status_code = 200
-        return response
+        return response, 200
 
     def post(self, user, *arg, **kwargs):
         ''' Create a bucketlist '''
