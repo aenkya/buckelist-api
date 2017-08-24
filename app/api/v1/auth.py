@@ -54,6 +54,6 @@ class RegisterUser(Resource):
                 return response, 201
             else:
                 response = {'message': 'User already Exists!. Login'}
-                return response, 201
+                return response, 409
         except Exception as e:
             abort(400, 'Error while creating your account: {}'.format(e))
