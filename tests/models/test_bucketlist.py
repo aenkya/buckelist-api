@@ -41,7 +41,7 @@ class TestBucketlistModel(BaseCase):
         with self.app.app_context():
             bucketlist.delete_bucketlist()
             verify_bucketlist = Bucketlist.query.filter_by(
-                name="sample_2").first()
+                name="sample_1").first()
         self.assertFalse(
             verify_bucketlist,
             "Bucketlist that is deleted should not exist in the database"
