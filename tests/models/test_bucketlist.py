@@ -1,19 +1,53 @@
-import json
+from datetime import datetime
 
 from tests.base_test import BaseCase
+from app.models.user import User
+from app.models.bucketlist import Bucketlist
 
 
-class TestAuthenticateUser(BaseCase):
+class TestBucketlistModel(BaseCase):
 
     def setUp(self):
-        super(TestAuthenticateUser, self).setUp()
+        super(TestBucketlistModel, self).setUp()
 
-    def test_user_generate_auth_token_when_correct_login_credentials_are_provided(self):
-        login_credentials = json.dumps(dict(
-            email=self.user_1.get('email'), 
-            password=self.user_2.get('password')
-            ))
-        path = '/api/v1/auth/login'
-        response = self.client().post(path, data=login_credentials)
-        self.assertIn('token', response.data)
-        self.assertEqual(response.status_code, 200)
+    def Bucketlist_inserted_in_db(self):
+        with self.app.app_context():
+            bucketlist = Bucketlist.query.filter_by(id=1).first()
+        self.assertEqual(bucketlist.name, "Bucketlist", "Name not added")
+        self.assertEqual(bucketlist.user_id, 1, "user_id not added")
+        self.assertTrue(isinstance(bucketlist.date_created, datetime))
+        self.assertTrue(isinstance(bucketlist.date_modified, datetime))
+
+    def test_add_bucketlist(self):
+        with self.app.app_context():
+            user = User.query.filter_by(email="pnyondo@andela.com").first()
+            bucketlist = Bucketlist(name='Go hard or go home', user_id=user.id)
+            check = bucketlist.save_bucketlist()
+        self.assertTrue(check, "Bucketlist should be added")
+
+    def test_no_repeat_bucketlist_names(self):
+        with self.app.app_context():
+            user = User.query.filter_by(email="pnyondo@andela.com").first()
+            bucketlist = Bucketlist(name='sample_1', user_id=user.id)
+            check = bucketlist.save_bucketlist()
+        self.assertFalse(check, "Bucketlist should not be added")
+        self.assertFalse(bucketlist.id)
+
+    def test_delete_bucketlist(self):
+        with self.app.app_context():
+            bucketlist = Bucketlist.query.filter_by(
+                name="sample_1").first()
+        self.assertTrue(isinstance(bucketlist, Bucketlist))
+        with self.app.app_context():
+            bucketlist.delete_bucketlist()
+            verify_bucketlist = Bucketlist.query.filter_by(
+                name="sample_2").first()
+        self.assertFalse(
+            verify_bucketlist,
+            "Bucketlist that is deleted should not exist in the database"
+        )
+
+    def Bucketlist_item_list(self):
+        with self.app.app_context():
+            bucketlist = Bucketlist.query.filter_by(name="sample_1").first()
+        self.assertTrue(isinstance(bucketlist.bucketlist_items, list))

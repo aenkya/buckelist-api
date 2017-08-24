@@ -13,7 +13,7 @@ class TestConfig(unittest.TestCase):
 
     def test_config_is_testing(self):
         ''' test that app is initialized with testing configurations '''
-        self.assertTrue(self.app.config['DEBUG'])
+        self.assertTrue(self.app.config['TESTING'])
         self.assertEqual(
             self.app.config['SQLALCHEMY_DATABASE_URI'],
             'postgresql://bruce:Inline-360@localhost/test_db'
