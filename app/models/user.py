@@ -14,14 +14,14 @@ bcrypt = Bcrypt()
 class User(BaseModel):
     '''This class represents the user model'''
     first_name = db.Column(db.String(25), nullable=False)
-    last_name = db.Column(db.String(35), nullable=False)
+    last_name = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    _password_hash = db.Column(db.String(25))
+    _password_hash = db.Column(db.String(255))
 
     @property
     def password(self):
         ''' Method that is run when password property is called '''
-        return json.loads('Password: Write Only')
+        return 'Password: Write Only'
 
     @password.setter
     def password(self, password):

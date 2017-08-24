@@ -7,8 +7,8 @@ class Bucketlist(BaseModel):
     __table__name = 'bucketlist'
 
     name = db.Column(db.String(255), nullable=False)
-    items = db.relationship(
-        'Item', cascade='all, delete', backref='bucketlist')
+    # items = db.relationship(
+    #     'Item', cascade='all, delete', backref='bucketlist')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     @staticmethod
@@ -22,6 +22,17 @@ class Bucketlist(BaseModel):
             self.save()
             return True
         return False
+
+    def delete_bucketlist(self):
+        ''' Method to delete user '''
+        if self.exists():
+            self.delete()
+            return True
+        return False
+
+    def exists(self):
+        ''' Check if bucketlist exists '''
+        return True if Bucketlist.query.filter_by(name=self.name).first() else False
 
     def __repr__(self):
         return "<Bucketlist: {}>".format(self.name)
