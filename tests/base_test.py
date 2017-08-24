@@ -77,6 +77,7 @@ class BaseCase(unittest.TestCase):
         self.assertTrue(result['auth_token'])
         return {'x-access-token': result['auth_token']}
 
+
     def post_data(self, path, data):
         ''' method to pass data to API path given '''
         return self.client.post(
