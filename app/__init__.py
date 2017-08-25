@@ -8,7 +8,6 @@ from flask_bcrypt import Bcrypt
 from instance.config import app_config
 from .api.v1.bucketlist import bucketlist_api
 from .api.v1.auth import auth_api
-from .api.v1.item import item_api
 from .models.baseModel import db
 
 bcrypt = Bcrypt()
@@ -21,7 +20,6 @@ api = Api(api_v1, version='1.0', title='BucketList API',
 
 api.add_namespace(bucketlist_api)
 api.add_namespace(auth_api)
-api.add_namespace(item_api)
 
 
 def create_app(config_name):
