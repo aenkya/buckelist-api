@@ -15,10 +15,10 @@ bucketlist_fields = bucketlist_api.model(
             required=True,
             description="Bucketlist name",
             example="test_bucketlist"),
-        'date_created': fields.DateTime(required=False, attribute='date_create'),
+        'date_created': fields.DateTime(required=False, attribute='date_created'),
         'date_modified': fields.DateTime(required=False, attribute='date_modified'),
         'created_by':fields.Integer(required=True, attribute='user_id'),
-        'bucketlist_items': fields.Nested(item_fields)
+        'items': fields.Nested(item_fields)
     }
 )
 
