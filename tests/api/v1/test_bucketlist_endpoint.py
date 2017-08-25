@@ -29,7 +29,7 @@ class TestBucketlistEndpoint(BaseCase):
         with self.app.app_context():
             self.add_test_bucketlists()
             response = self.client().get('/api/v1/bucketlists/1')
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         expected_list = sorted(['id', 'name', 'items', 'date_created', 'date_modified', 'created_by'])
         self.assertEqual(response.status_code, 200)
         self.assertListEqual([result.get('name'), result.get('created_by')], ['sample_1', 1])

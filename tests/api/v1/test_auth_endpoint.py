@@ -11,15 +11,15 @@ class TestRegister(BaseCase):
 
     def test_user_registration(self):
         response = self.client().post('/api/v1/auth/register', data = json.dumps(self.user_data))
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(result['message'], 'User registration successful.')
 
     def test_register_already_registered_user_unsuccessful(self):
         response = self.client().post('/api/v1/auth/register', data = json.dumps(self.user_data))
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 201)
         response = self.client().post('/api/v1/auth/register', data = json.dumps(self.user_data))
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 409)
         self.assertEqual(result['message'], 'User already Exists!. Login')
 
@@ -28,7 +28,7 @@ class TestRegister(BaseCase):
                      'password': 'test', 'password_confirm': 'tester'}
 
         response = self.client().post('/api/v1/auth/register', data=json.dumps(user_data))
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], "Password doesn't match confirmation")
@@ -38,7 +38,7 @@ class TestRegister(BaseCase):
                      'password': 'test_password', 'password_confirm': 'test_password'}
 
         response = self.client().post('/api/v1/auth/register', data=json.dumps(user_data))
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], 'email address is invalid.')
@@ -65,5 +65,5 @@ class TestAuth(BaseCase):
         login_details = json.dumps(dict(email='pnyondo@andela.com', password='wrong_password'))
         auth_response = self.client().post('/api/v1/auth/login', data=login_details)
         self.assertEqual(auth_response.status_code, 401)
-        result = json.loads(auth_response.data)
+        result = json.loads(auth_response.data.decode('utf-8'))
         self.assertEqual(result['message'], 'Wrong password')
