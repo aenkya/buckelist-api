@@ -6,8 +6,8 @@ from flask_bcrypt import Bcrypt
 
 
 from instance.config import app_config
-from app.api.bucketlist import bucketlist_api
-from app.api.auth import auth_api
+from .api.v1.bucketlist import bucketlist_api
+from .api.v1.auth import auth_api
 from .models.baseModel import db
 
 bcrypt = Bcrypt()

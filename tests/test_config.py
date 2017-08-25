@@ -16,5 +16,5 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(self.app.config['TESTING'])
         self.assertEqual(
             self.app.config['SQLALCHEMY_DATABASE_URI'],
-            'postgresql://bruce:Inline-360@localhost/test_db'
+            'postgresql://localhost/test_db'
         )

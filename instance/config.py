@@ -8,7 +8,7 @@ class Config(object):
     # ALT: <variable> = os.getenv('<env_var_name>')
     __SECRET = 'HeathLEDGERwasTHEBESTidc'
     # database with host configuration removed. Defaults to machine localhost
-    __DB_NAME = "postgresql://bruce:Inline-360@localhost/bucketlist_api"
+    __DB_NAME = os.getenv('DB_NAME') or "postgresql://localhost/bucketlist_api"
     BCRYPT_LOG_ROUNDS = 13
     SECRET_KEY = os.getenv('SECRET') or __SECRET
     AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
@@ -24,7 +24,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Configurations for Testing with a separate test database"""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://bruce:Inline-360@localhost/test_db"
+    SQLALCHEMY_DATABASE_URI = "postgresql://localhost/test_db"
     DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
 
