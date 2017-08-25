@@ -59,6 +59,30 @@ class SingleBucketlistEndpoint(Resource):
             return bucketlist, 200
         abort(400, message='No bucketlist found with specified ID')
 
+    @marshal_with(bucketlist_fields)
+    def put(self, bucketlist_id):
+        ''' Update bucketlist with given bucketlist_id '''
+        arguments = request.get_json(force=True)
+        name = arguments.get('name')
+
+        bucketlist = Bucketlist.query.filter_by(id=bucketlist_id, user_id=1).first()
+        if bucketlist:
+            bucketlist.name = name
+            bucketlist.save_bucketlist()
+            return bucketlist, 200
+        else:
+            abort(400, message='Bucketlist with ID#{} not found or not yours.'.format(bucketlist_id))
+
+    def delete(self, bucketlist_id):
+        ''' Delete bucketlist with bucketlist_id as given '''
+        bucketlist = Bucketlist.query.filter_by(id=bucketlist_id, user_id=1).first()
+        if bucketlist:
+            if bucketlist.delete_bucketlist():
+                response = {'message': 'Bucketlist with ID#{} successfully deleted.'.format(bucketlist_id)}
+            return response, 200
+        else:
+            abort(400, message='Bucketlist with ID#{} not found or not yours.'.format(bucketlist_id)) 
+
         
 
 
