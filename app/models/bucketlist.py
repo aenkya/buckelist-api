@@ -12,11 +12,6 @@ class Bucketlist(BaseModel):
         'Item', cascade='all, delete', backref='bucketlist')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    @staticmethod
-    def get_all():
-        '''get all bucketlist items'''
-        return Bucketlist.query.all()
-
     def save_bucketlist(self):
         ''' Method to save bucketlist '''
         if not self.exists():

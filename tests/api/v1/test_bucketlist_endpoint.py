@@ -24,7 +24,6 @@ class TestBucketlistEndpoint(BaseCase):
             response = self.client().get('/api/v1/bucketlists')
             result = response.data
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(result), 2)
 
     def test_get_returns_one_bucketlist_if_id_is_specified(self):
         with self.app.app_context():
