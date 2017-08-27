@@ -13,7 +13,7 @@ class Config(object):
     SECRET_KEY = os.getenv('SECRET') or __SECRET
     AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __DB_NAME
-
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
     """Configurations for Development"""
