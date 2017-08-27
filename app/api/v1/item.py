@@ -111,8 +111,6 @@ class SingleItemEndpoint(Resource):
         if bucketlist is None:
             return abort(400, message='Bucketlist item of id {} not found or does not '
                                       'belong to you.'.format(bucketlist_id))
-        print(bucketlist.id)
-        print('heeer')
         item = Item.query.filter_by(
             id=item_id, bucketlist_id=bucketlist.id).first()
         if item:

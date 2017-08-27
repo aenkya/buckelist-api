@@ -30,7 +30,7 @@ class TestRegister(BaseCase):
         response = self.client().post('/api/v1/auth/register', data=json.dumps(user_data))
         result = json.loads(response.data.decode('utf-8'))
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], "Password doesn't match confirmation")
 
     def test_user_registration_fails_with_401_error_if_email_is_invalid(self):

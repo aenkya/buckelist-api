@@ -68,23 +68,22 @@ class BaseCase(unittest.TestCase):
         item_2 = Item(name='kampala', bucketlist_id=bucketlist.id)
         item_1.save(), item_2.save()
 
-    def auth_headers(self, email='pnyondo@andela.com', password='test'):
+    def auth_headers(self, email='emugaya@andela.com', password='test'):
         ''' method generates auth headers for test user '''
         path = '/api/v1/auth/login'
         data = {'email': email, 'password': password}
         response = self.post_data(path, data)
         result = json.loads(response.data)
-        self.assertTrue(result['auth_token'])
-        return {'x-access-token': result['auth_token']}
+        self.assertTrue(result['token'])
+        return {'x-access-token': result['token']}
 
 
     def post_data(self, path, data):
         ''' method to pass data to API path given '''
-        return self.client.post(
+        return self.client().post(
             path,
             data=json.dumps(data),
-            content_type='application/json',
-            follow_directs=True
+            content_type='application/json'
         )
 
     def tearDown(self):
