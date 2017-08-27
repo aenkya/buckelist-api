@@ -11,7 +11,7 @@ class Config(object):
     __DB_NAME = os.getenv('DB_NAME') or "postgresql://localhost/bucketlist_api"
     BCRYPT_LOG_ROUNDS = 13
     SECRET_KEY = os.getenv('SECRET') or __SECRET
-    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
+    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 3000
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __DB_NAME
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

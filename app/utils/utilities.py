@@ -14,9 +14,9 @@ def validate_email(email):
 @auth.verify_token
 def verify_token(token=None):
     ''' Method to verify token '''
-    token = request.headers.get('x-access-token')
+    token = request.headers.get('x-access-token') or ''
     user_id = User.verify_authentication_token(token)
     if user_id:
-        g.current_user = User.query.filter_by(id=user_id).first()
+        g.user = User.query.filter_by(id=user_id).first()
         return True
     return False
