@@ -69,6 +69,7 @@ class AuthenticateUser(Resource):
     @auth_api.response(401, 'Wrong password')
     @auth_api.response(500, 'Internal Server Error')
     def post(self):
+        ''' Method to handle POST request for User LOGIN '''
         arguments = request.get_json(force=True)
         email, password = arguments.get('email'), arguments.get('password')
 
