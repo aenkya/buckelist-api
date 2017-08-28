@@ -1,9 +1,12 @@
-from flask import request, jsonify, g
+from flask import request, jsonify, g, url_for
 from flask_restplus import abort, Resource, fields, Namespace, marshal_with
+from flask_restplus import marshal
+from sqlalchemy import desc
 from app.models.bucketlist import Bucketlist
 from app.models.user import User
 from .item import item_fields
 from app.utils.utilities import auth
+from instance.config import Config
 
 
 bucketlist_api = Namespace(
@@ -33,14 +36,50 @@ class BucketlistsEndPoint(Resource):
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
     @bucketlist_api.response(400, 'No bucketlists found for specified user')
     @bucketlist_api.response(404, 'No bucketlists found for specified user')
-    @bucketlist_api.marshal_with(bucketlist_fields)
     def get(self):
         ''' Retrieve bucketlists belonging to user '''
         auth_user = g.user
-        bucketlists = Bucketlist.query.filter_by(user_id=auth_user.id).all()
-        if bucketlists:
-            return bucketlists, 200
-        abort(400, message='No bucketlists found for specified user')
+        search_term = request.args.get('q') or None
+        limit = request.args.get('limit') or Config.MAX_PAGE_SIZE
+        page_limit = 100 if int(limit) > 100 else int(limit)
+        page = request.args.get('page') or 1
+
+        if page_limit < 1 or page < 1:
+            return abort(400, 'Page or Limit cannot be negative values')
+
+        bucketlist_data = Bucketlist.query.filter_by(user_id=auth_user.id).\
+            order_by(desc(Bucketlist.date_created))
+        if bucketlist_data.all():
+            bucketlists = bucketlist_data
+
+            if search_term:
+                bucketlists = bucketlist_data.filter(
+                    Bucketlist.name.ilike('%'+search_term+'%')
+                )
+
+            bucketlist_paged = bucketlists.paginate(
+                page=page, per_page=page_limit, error_out=True
+            )
+            results = dict(data=marshal(bucketlist_paged.items, bucketlist_fields))
+
+            pages = {
+                'page': page, 'per_page': page_limit,
+                'total_data': bucketlist_paged.total, 'pages': bucketlist_paged.pages
+            }
+
+            if page == 1:
+                pages['prev_page'] = url_for('api.bucketlist')+'?limit={}'.format(page_limit)
+
+            if page > 1:
+                pages['prev_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page-1)
+
+            if page < bucketlist_paged.pages:
+                pages['next_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page+1)
+
+            results.update(pages)
+            return results, 200
+
+        return abort(400, message='No bucketlists found for specified user') 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
