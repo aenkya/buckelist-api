@@ -14,6 +14,7 @@ class Config(object):
     AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 3000
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __DB_NAME
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAX_PAGE_SIZE = os.getenv('MAX_PAGE_SIZE') or 30  # Maximum results per page    
 
 class DevelopmentConfig(Config):
     """Configurations for Development"""
