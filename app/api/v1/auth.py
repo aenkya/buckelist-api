@@ -7,7 +7,7 @@ from app.utils.utilities import validate_email
 auth_api = Namespace(
     'auth', description='User authentication and registration')
 
-USER = auth_api.model(
+user_fields = auth_api.model(
     'User',
     {
         'first_name': fields.String(
@@ -24,11 +24,12 @@ USER = auth_api.model(
 @auth_api.route('/register', endpoint='register')
 class RegisterUser(Resource):
     ''' Class for User Registration '''
-    @auth_api.response(201, {'message': 'User registered successfully'})
-    @auth_api.response(401, {'message': 'Error while creating your account'})
-    @auth_api.response(409, {'message': 'User already exists!'})
-    @auth_api.response(500, {'message': 'Server Error. Couldn\'t complete request'})
-    @auth_api.doc(model='User', body=USER)
+    @auth_api.response(201, 'User registration successfull.')
+    @auth_api.response(409, 'User already Exists!. Login')
+    @auth_api.response(400, 'Error while creating your account:')
+    @auth_api.response(400, 'Password doesn\'nt match confirmation')
+    @auth_api.response(500, 'Server Error. Couldn\'t complete request')
+    @auth_api.doc(model='User', body=user_fields)
     def post(self):
         ''' Method to handle POST request for User registration '''
         arguments = request.get_json(force=True)
@@ -40,7 +41,7 @@ class RegisterUser(Resource):
         if not validate_email(email):
             return abort(400, message='email address is invalid.')
         if password != password_confirm:
-            return abort(400, message='Password doesn\'t match confirmation')
+            return abort(401, message='Password doesn\'t match confirmation')
         if not first_name or not last_name:
             return abort(400, 'First Name AND Last Name should be provided')
 
@@ -62,7 +63,13 @@ class RegisterUser(Resource):
 @auth_api.route('/login', endpoint='login')
 class AuthenticateUser(Resource):
 
+
+    @auth_api.response(202, 'Login Successful')
+    @auth_api.response(400, 'Bad Request')
+    @auth_api.response(401, 'Wrong password')
+    @auth_api.response(500, 'Internal Server Error')
     def post(self):
+        ''' Method to handle POST request for User LOGIN '''
         arguments = request.get_json(force=True)
         email, password = arguments.get('email'), arguments.get('password')
 
@@ -76,7 +83,8 @@ class AuthenticateUser(Resource):
                 token = user.generate_auth_token()
                 g.user, g.token = user, token.decode('utf-8')
                 if token:
-                    return {'token': g.token}, 200
+                    result = {'token': g.token, 'email': g.user.email, 'first_name': g.user.first_name, 'last_name': g.user.last_name}
+                    return result, 200
             return {'message': 'Wrong password'}, 401
         except Exception as e:
             return abort(500, 'Error logging in user:{}'.format(e.message))

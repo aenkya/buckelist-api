@@ -9,7 +9,7 @@ class Bucketlist(BaseModel):
 
     name = db.Column(db.String(255), nullable=False)
     items = db.relationship(
-        'Item', cascade='all, delete', backref='bucketlist')
+        'Item', cascade='all, delete', backref='item', uselist=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def save_bucketlist(self):
