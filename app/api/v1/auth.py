@@ -1,7 +1,7 @@
 from flask import request, g
 from flask_restplus import abort, Resource, Namespace, fields
 from app.models.user import User
-from app.utils.utilities import validate_email
+from app.utils.utilities import validate_email, auth
 
 
 auth_api = Namespace(
@@ -89,10 +89,11 @@ class AuthenticateUser(Resource):
         except Exception as e:
             return abort(500, 'Error logging in user:{}'.format(e.message))
 
-
-# class Logout(Resource):
-
-#     @auth_api.login_required
-#     def get(self):
-#         g.user = None
-#         return {'message': 'ok'}, 200
+@auth_api.route('/logout', endpoint='logout')
+class Logout(Resource):
+    @auth.login_required
+    @auth_api.response(500, 'Internal Server Error')    
+    def get(self):
+        ''' Method to log out user '''
+        g.user = None
+        return {'message': 'ok'}, 200
