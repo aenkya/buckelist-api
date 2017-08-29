@@ -8,12 +8,13 @@ class Config(object):
     # ALT: <variable> = os.getenv('<env_var_name>')
     __SECRET = 'HeathLEDGERwasTHEBESTidc'
     # database with host configuration removed. Defaults to machine localhost
-    __DB_NAME = os.getenv('DB_NAME') or "postgresql://localhost/bucketlist_api"
+    __DB_NAME = os.getenv('DATABASE_URL') or "postgresql://localhost/bucketlist_api"
     BCRYPT_LOG_ROUNDS = 13
     SECRET_KEY = os.getenv('SECRET') or __SECRET
-    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
-    SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __DB_NAME
-
+    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 3000
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or __DB_NAME
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAX_PAGE_SIZE = os.getenv('MAX_PAGE_SIZE') or 30  # Maximum results per page    
 
 class DevelopmentConfig(Config):
     """Configurations for Development"""

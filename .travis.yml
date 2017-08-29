@@ -17,7 +17,7 @@ before_script:
   - psql -c 'create database test_db;' -U postgres
 
 # command to run tests
-script: coverage run run_tests.py
+script: coverage run --source app run_tests.py
 
 after_success:
   - coveralls

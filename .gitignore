@@ -6,3 +6,5 @@ venv
 *.pyc
 /practice
 *.sqlite
+.coverage
+.DS_Store
