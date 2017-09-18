@@ -31,9 +31,9 @@ class UsersList(Resource):
         use_token = request.headers.get('use_token') or None
 
         if use_token:
-            return g.user
+            return g.user, 200
         users = User.query.order_by(desc(User.date_created)).all()
-        return users, 200
+        return users, 200 if users else abort(400, message='Users not found')
 
 @user_api.route('/<user_id>', endpoint='single_user')
 class UserEndpoint(Resource):
