@@ -8,3 +8,4 @@ venv
 *.sqlite
 .coverage
 .DS_Store
+.vscode/settings.json
