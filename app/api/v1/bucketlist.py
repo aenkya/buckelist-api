@@ -90,7 +90,7 @@ class BucketlistsEndPoint(Resource):
     def post(self):
         ''' Create a bucketlist '''
         arguments = request.get_json(force=True)
-        name = arguments.get('name')
+        name = arguments.get('name').strip()
         auth_user = g.user
         try:
             bucketlist = Bucketlist(name=name, user_id=auth_user.id)
@@ -127,7 +127,7 @@ class SingleBucketlistEndpoint(Resource):
         ''' Update bucketlist with given bucketlist_id '''
         auth_user = g.user
         arguments = request.get_json(force=True)
-        name = arguments.get('name')
+        name = arguments.get('name').strip()
 
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id).first()

@@ -34,16 +34,18 @@ class RegisterUser(Resource):
         ''' Method to handle POST request for User registration '''
         arguments = request.get_json(force=True)
         first_name, last_name, email = arguments.get(
-            'first_name'), arguments.get('last_name'), arguments.get('email').lower()
+            'first_name').strip(), arguments.get('last_name').strip(), arguments.get('email').lower().strip()
         password, password_confirm = arguments.get(
-            'password'), arguments.get('password_confirm')
+            'password').strip(), arguments.get('password_confirm').strip()
 
         if not validate_email(email):
             return abort(400, message='email address is invalid.')
-        if password != password_confirm:
-            return abort(401, message='Password doesn\'t match confirmation')
         if not first_name or not last_name:
             return abort(400, 'First Name AND Last Name should be provided')
+        if not password or not password_confirm:
+            return abort(400, 'Password must be provided')
+        if password != password_confirm:
+            return abort(401, message='Password doesn\'t match confirmation')
 
         user = User(email=email, first_name=first_name,
                     last_name=last_name, password=password)
@@ -71,10 +73,12 @@ class AuthenticateUser(Resource):
     def post(self):
         ''' Method to handle POST request for User LOGIN '''
         arguments = request.get_json(force=True)
-        email, password = arguments.get('email'), arguments.get('password')
+        email, password = arguments.get('email').strip(), arguments.get('password').strip()
 
         if not validate_email(email):
             return abort(400, message='Please provide valid email credentials.')
+        if not password:
+            return abort(400, message='Password cannot be empty')
         user = User.query.filter_by(email=email).first()
         try:
             if not user:
@@ -83,7 +87,7 @@ class AuthenticateUser(Resource):
                 token = user.generate_auth_token()
                 g.user, g.token = user, token.decode('utf-8')
                 if token:
-                    result = {'token': g.token, 'email': g.user.email, 'first_name': g.user.first_name, 'last_name': g.user.last_name}
+                    result = {'token': g.token}
                     return result, 200
             return {'message': 'Wrong password'}, 401
         except Exception as e:
