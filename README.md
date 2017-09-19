@@ -23,6 +23,8 @@ You can also test the API demo hosted at https://buckelist-api.herokuapp.com in 
 | `POST /auth/register`| Register a user | TRUE |
 | `POST /bucketlists/`| Create a new bucket list | FALSE |
 | `GET /bucketlists/`| List all the created bucket lists | FALSE |
+| `GET /users/`| List all the created users | FALSE |
+| `GET /users/\<id>`| Get a specific user | FALSE |
 | `GET /bucketlists/\<id>`| Get single bucket list | FALSE |
 | `PUT /bucketlists/\<id>`| Update this bucket list | FALSE |
 | `DELETE /bucketlists/\<id>`| Delete this single bucket list | FALSE |
