@@ -58,8 +58,12 @@ class User(BaseModel):
             return False
         return data['id'] if data['id'] else False
 
-    def delete_user(self):
+    def delete_user(self, deep_delete=False):
         ''' Method to delete user '''
+        if not deep_delete:
+            if self.deactivate():
+                return True
+            return False        
         if self.exists():
             self.delete()
             return True

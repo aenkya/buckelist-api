@@ -11,11 +11,20 @@ class BaseModel(db.Model):
     date_modified = db.Column(
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
+    active = db.Column(db.Boolean, default=True)
 
     def delete(self):
         '''delete data from database'''
         db.session.delete(self)
         db.session.commit()
+
+    def deactivate(self):
+        ''' deactivate data '''
+        if self.exists() and self.active:
+            self.active = False
+            self.save()
+            return True
+        return False
 
     def save(self):
         '''save data to database'''

@@ -9,8 +9,12 @@ class Item(BaseModel):
     bucketlist_id = db.Column(db.Integer,
                               db.ForeignKey('bucketlist.id'), nullable=False)
 
-    def delete_item(self):
+    def delete_item(self, deep_delete=False):
         ''' Method to delete item '''
+        if not deep_delete:
+            if self.deactivate():
+                return True
+            return False        
         if self.exists():
             self.delete()
             return True
