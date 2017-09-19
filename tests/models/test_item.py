@@ -12,7 +12,7 @@ class TestItemModel(BaseCase):
 
     def test_item_inserted_in_db(self):
         with self.app.app_context():
-            item = Item.query.filter_by(id=1).first()
+            item = Item.query.filter_by(id=1, active=True).first()
         self.assertEqual(item.name, "Mombasa", "Name not added")
         self.assertEqual(item.bucketlist_id, 1, "User Id not added")
         self.assertTrue(isinstance(item.date_created, datetime))
@@ -20,7 +20,7 @@ class TestItemModel(BaseCase):
 
     def test_add_item_to_db(self):
         with self.app.app_context():
-            bucketlist = Bucketlist.query.filter_by(name="sample_1").first()
+            bucketlist = Bucketlist.query.filter_by(name="sample_1", active=True).first()
             item = Item(
                 name='Fishing',
                 bucketlist_id=bucketlist.id
@@ -30,10 +30,22 @@ class TestItemModel(BaseCase):
 
     def test_delete_bucketlist_item(self):
         with self.app.app_context():
-            item = Item.query.filter_by(id=1).first()
+            item = Item.query.filter_by(id=1, active=True).first()
         self.assertTrue(item)
         with self.app.app_context():
             item.delete_item()
+            verify_item = Item.query.filter_by(id=1, active=True).first()
+        self.assertFalse(
+            verify_item,
+            "Item that is deleted should not be returned"
+        )
+
+    def test_delete_bucketlist_item_deletes_from_db(self):
+        with self.app.app_context():
+            item = Item.query.filter_by(id=1, active=True).first()
+        self.assertTrue(item)
+        with self.app.app_context():
+            item.delete_item(True)
             verify_item = Item.query.filter_by(id=1).first()
         self.assertFalse(
             verify_item,

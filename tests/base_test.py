@@ -55,7 +55,7 @@ class BaseCase(unittest.TestCase):
     @staticmethod
     def add_test_bucketlists():
         ''' method to add test bucketlists to db '''
-        user = User.query.filter_by(email='emugaya@andela.com').first()
+        user = User.query.filter_by(email='emugaya@andela.com', active=True).first()
         bucketlist_1 = Bucketlist(user_id=user.id, name='sample_1')
         bucketlist_2 = Bucketlist(user_id=user.id, name='sample_2')
         bucketlist_1.save(), bucketlist_2.save()
@@ -63,7 +63,7 @@ class BaseCase(unittest.TestCase):
     @staticmethod
     def add_test_items():
         ''' method to add test items to bucketlist '''
-        bucketlist = Bucketlist.query.filter_by(name='sample_1').first()
+        bucketlist = Bucketlist.query.filter_by(name='sample_1', active=True).first()
         item_1 = Item(name='Mombasa', bucketlist_id=bucketlist.id)
         item_2 = Item(name='kampala', bucketlist_id=bucketlist.id)
         item_1.save(), item_2.save()
