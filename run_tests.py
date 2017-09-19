@@ -6,6 +6,7 @@ from tests.models.test_item import TestItemModel
 from tests.api.v1.test_auth_endpoint import TestRegister, TestAuth
 from tests.api.v1.test_bucketlist_endpoint import TestBucketlistEndpoint
 from tests.api.v1.test_item_endpoint import TestItemEndpoint
+from tests.api.v1.test_user_endpoint import TestUserEndpoint
 
 if __name__ == "__main__":
     unittest.main()

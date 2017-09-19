@@ -83,7 +83,7 @@ class TestItemEndpoint(BaseCase):
     def test_delete_removes_item_from_bucketlist(self):
         with self.app.app_context():
 
-            self.assertEqual(len(Item.query.all()), 2)
+            self.assertEqual(len(Item.query.filter_by(active=True).all()), 2)
 
             response = self.client().delete('/api/v1/bucketlists/1/items/1',
                                             headers=self.auth_headers())
@@ -93,4 +93,4 @@ class TestItemEndpoint(BaseCase):
         self.assertEqual(result.get('message'),
                          'Item with id 1 deleted successfully.')
         with self.app.app_context():
-            self.assertEqual(len(Item.query.all()), 1)
+            self.assertEqual(len(Item.query.filter_by(active=True).all()), 1)
