@@ -35,7 +35,7 @@ class UsersList(Resource):
 
         if use_token:
             return g.user, 200
-        users = User.query.order_by(desc(User.date_created)).all()
+        users = User.query.filter_by(active=True).order_by(desc(User.date_created)).all()
         return users, 200 if users else abort(404, message='Users not found')
 
 @user_api.route('/<user_id>', endpoint='single_user')
@@ -46,7 +46,7 @@ class UserEndpoint(Resource):
     @user_api.marshal_with(user_fields)
     def get(self, user_id):
         ''' GET method to retrieve user details '''
-        user = User.query.get(user_id)
+        user = User.query.filter_by(id=user_id, active=True).first()
         return user, 200 if user else abort(404, message='User with ID {} not found.'.format(user_id))
 
     @auth.login_required

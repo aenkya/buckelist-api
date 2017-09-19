@@ -47,7 +47,7 @@ class BucketlistsEndPoint(Resource):
         if page_limit < 1 or page < 1:
             return abort(400, 'Page or Limit cannot be negative values')
 
-        bucketlist_data = Bucketlist.query.filter_by(user_id=auth_user.id).\
+        bucketlist_data = Bucketlist.query.filter_by(user_id=auth_user.id, active=True).\
             order_by(desc(Bucketlist.date_created))
         if bucketlist_data.all():
             bucketlists = bucketlist_data
@@ -113,7 +113,7 @@ class SingleBucketlistEndpoint(Resource):
         ''' Retrieve individual bucketlist with given bucketlist_id '''
         auth_user = g.user
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             return bucketlist, 200
         abort(400, message='No bucketlist found with specified ID')
@@ -130,7 +130,7 @@ class SingleBucketlistEndpoint(Resource):
         name = arguments.get('name').strip()
 
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             bucketlist.name = name
             bucketlist.save_bucketlist()
@@ -147,7 +147,7 @@ class SingleBucketlistEndpoint(Resource):
         ''' Delete bucketlist with bucketlist_id as given '''
         auth_user = g.user
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             if bucketlist.delete_bucketlist():
                 response = {

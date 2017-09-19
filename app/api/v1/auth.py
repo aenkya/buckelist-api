@@ -79,7 +79,7 @@ class AuthenticateUser(Resource):
             return abort(400, message='Please provide valid email credentials.')
         if not password:
             return abort(400, message='Password cannot be empty')
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email, active=True).first()
         try:
             if not user:
                 return {'message': 'Email not found'}, 400
