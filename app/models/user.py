@@ -39,7 +39,12 @@ class User(BaseModel):
     def generate_auth_token(self, duration=Config.AUTH_TOKEN_DURATION):
         ''' Method for generating a JWT authentication token '''
         serializer = Serializer(Config.SECRET_KEY, expires_in=int(duration))
-        return serializer.dumps({'id': self.id})
+        return serializer.dumps({
+               'id': self.id,
+               'email': self.email,
+               'first_name': self.first_name,
+               'last_name': self.last_name
+               })
 
     @staticmethod
     def verify_authentication_token(token):
