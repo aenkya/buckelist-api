@@ -7,3 +7,5 @@ venv
 /practice
 *.sqlite
 .coverage
+.DS_Store
+*.vscode*

@@ -40,7 +40,7 @@ class ItemEndpoint(Resource):
         name = arguments.get('name')
 
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             try:
                 item = Item(name=name, bucketlist_id=bucketlist.id)
@@ -82,13 +82,13 @@ class SingleItemEndpoint(Resource):
         name, done = arguments.get('name') or None, arguments.get('done')
 
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist is None:
             return abort(400, message='Bucketlist item of id {} not found or does not '
                                       'belong to you.'.format(bucketlist_id))
 
         item = Item.query.filter_by(
-            id=item_id, bucketlist_id=bucketlist.id).first()
+            id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             try:
                 item.name = name if name is not None else item.name
@@ -107,15 +107,15 @@ class SingleItemEndpoint(Resource):
         ''' Delete the item with given id '''
         auth_user = g.user
         bucketlist = Bucketlist.query.filter_by(
-            id=bucketlist_id, user_id=auth_user.id).first()
+            id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist is None:
             return abort(400, message='Bucketlist item of id {} not found or does not '
                                       'belong to you.'.format(bucketlist_id))
         item = Item.query.filter_by(
-            id=item_id, bucketlist_id=bucketlist.id).first()
+            id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             try:
-                item.delete()
+                item.delete_item()
                 response = {
                     'message': 'Item with id {} deleted successfully.'.format(item_id)}
                 return response, 200
@@ -132,12 +132,12 @@ class SingleItemEndpoint(Resource):
         ''' retrieve bucketlist items '''
         auth_user = g.user
         bucketlist = Bucketlist.query.filter_by(
-            user_id=auth_user.id, id=bucketlist_id).first()
+            user_id=auth_user.id, id=bucketlist_id, active=True).first()
         if bucketlist is None:
             return abort(400, message='Bucketlist item of id {} not found or does not '
                                       'belong to you.'.format(bucketlist_id))
         item = Item.query.filter_by(
-            id=item_id, bucketlist_id=bucketlist.id).first()
+            id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             return item, 200
         return abort(400, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))

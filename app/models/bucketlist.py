@@ -19,8 +19,12 @@ class Bucketlist(BaseModel):
             return True
         return False
 
-    def delete_bucketlist(self):
+    def delete_bucketlist(self, deep_delete=False):
         ''' Method to delete bucketlist '''
+        if not deep_delete:
+            if self.deactivate():
+                return True
+            return False
         if self.exists():
             self.delete()
             return True
