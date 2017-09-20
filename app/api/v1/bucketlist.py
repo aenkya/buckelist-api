@@ -155,5 +155,5 @@ class SingleBucketlistEndpoint(Resource):
                     'message': 'Bucketlist with id {} successfully deleted.'.format(bucketlist_id)}
             return response, 200
         else:
-            abort(400, message='Bucketlist with id {} not found or not yours.'.format(
+            abort(404, message='Bucketlist with id {} not found or not yours.'.format(
                 bucketlist_id))
