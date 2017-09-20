@@ -31,6 +31,7 @@ class ItemEndpoint(Resource):
     @item_api.response(201, 'Successful added item')
     @item_api.response(400, 'Failed to create item')
     @item_api.response(500, 'Internal Server Error')
+    @item_api.response(404, 'Item not found')
     @item_api.doc(model='Item', body=item_fields)
     @item_api.marshal_with(item_fields)
     def post(self, bucketlist_id):
@@ -38,6 +39,8 @@ class ItemEndpoint(Resource):
         auth_user = g.user
         arguments = request.get_json(force=True)
         name = arguments.get('name')
+        if not name:
+            return abort(400, 'Name cannot be empty!')        
 
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
@@ -49,13 +52,13 @@ class ItemEndpoint(Resource):
             except Exception as e:
                 abort(400, message='Failed to create item -> {}'.format(e.message))
         else:
-            abort(400, message='Bucketlist item of id {} not found or does not '
+            abort(404, message='Bucketlist of id {} not found or does not '
                                'belong to you.'.format(bucketlist_id))
 
     @item_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @item_api.response(200, 'Successfully retrieved items')
-    @item_api.response(400, 'Bucketlist item with id {} not found in the database')
+    @item_api.response(404, 'Bucketlist item with id {} not found in the database')
     @item_api.marshal_with(item_fields, as_list=True)
     def get(self, bucketlist_id):
         ''' retrieve bucketlist items '''
@@ -64,7 +67,7 @@ class ItemEndpoint(Resource):
             user_id=auth_user.id, id=bucketlist_id).first()
         if bucketlist:
             return bucketlist.items, 200
-        return abort(400, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
+        return abort(404, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
 
 
 @item_api.route('/<int:bucketlist_id>/items/<item_id>', endpoint='single_item')
@@ -74,12 +77,14 @@ class SingleItemEndpoint(Resource):
     @auth.login_required
     @item_api.response(200, 'Successfully Updated Bucketlist')
     @item_api.response(400, 'No existing bucketlist or bucketlist_item with the ids passed')
+    @item_api.response(403, 'Failed to update item')
+    @item_api.response(404, 'Item not found')  
     @item_api.marshal_with(item_fields)
     def put(self, bucketlist_id, item_id):
         ''' Modify the item details'''
         auth_user = g.user
         arguments = request.get_json(force=True)
-        name, done = arguments.get('name') or None, arguments.get('done')
+        name, done = arguments.get('name') or None, arguments.get('done')       
 
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
@@ -91,18 +96,19 @@ class SingleItemEndpoint(Resource):
             id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             try:
-                item.name = name if name is not None else item.name
+                if name:
+                    item.name = name
                 item.done = done if done is not None else item.done
                 item.save()
                 return item, 200
             except Exception as e:
-                return abort(400, message='Failed to update item -> {}'.format(e.message))
-        abort(400, message='Item with id {} not found.'.format(item_id))
+                return abort(403, message='Failed to update item -> {}'.format(e.message))
+        abort(404, message='Item with id {} not found.'.format(item_id))
 
     @item_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @item_api.response(200, 'Item with id {} deleted successfully.')
-    @item_api.response(400, 'Item with id {} not found.')
+    @item_api.response(404, 'Item with id {} not found.')
     def delete(self, bucketlist_id, item_id):
         ''' Delete the item with given id '''
         auth_user = g.user
@@ -121,12 +127,12 @@ class SingleItemEndpoint(Resource):
                 return response, 200
             except Exception as e:
                 return abort(400, message='Failed to delete item -> {}'.format(e.message))
-        abort(400, message='Item with id {} not found.'.format(item_id))
+        abort(404, message='Item with id {} not found.'.format(item_id))
 
     @item_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @item_api.response(200, 'Successfully retrieved items')
-    @item_api.response(400, 'Bucketlist item with id {} not found in the database')
+    @item_api.response(404, 'Bucketlist item with id {} not found in the database')
     @item_api.marshal_with(item_fields)
     def get(self, bucketlist_id, item_id):
         ''' retrieve bucketlist items '''
@@ -140,4 +146,4 @@ class SingleItemEndpoint(Resource):
             id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             return item, 200
-        return abort(400, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
+        return abort(404, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
