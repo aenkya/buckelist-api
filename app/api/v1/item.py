@@ -96,7 +96,8 @@ class SingleItemEndpoint(Resource):
             id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             try:
-                item.name = name if name is not None else item.name
+                if name:
+                    item.name = name
                 item.done = done if done is not None else item.done
                 item.save()
                 return item, 200

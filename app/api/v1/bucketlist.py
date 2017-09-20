@@ -131,8 +131,9 @@ class SingleBucketlistEndpoint(Resource):
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
-            bucketlist.name = name if name is not None else bucketlist.name
-            bucketlist.save_bucketlist()
+            if name:
+                bucketlist.name = name
+            bucketlist.save()
             return bucketlist, 200
         else:
             abort(404, message='Bucketlist with id {} not found or not yours.'.format(
