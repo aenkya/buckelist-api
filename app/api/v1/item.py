@@ -146,4 +146,4 @@ class SingleItemEndpoint(Resource):
             id=item_id, bucketlist_id=bucketlist.id, active=True).first()
         if item:
             return item, 200
-        return abort(200, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
+        return abort(400, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
