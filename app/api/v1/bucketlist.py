@@ -128,13 +128,12 @@ class SingleBucketlistEndpoint(Resource):
         auth_user = g.user
         arguments = request.get_json(force=True)
         name = arguments.get('name').strip()
-        if not name:
-            return abort(400, 'Name cannot be empty!')
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
-            bucketlist.name = name
-            bucketlist.save_bucketlist()
+            if name:
+                bucketlist.name = name
+            bucketlist.save()
             return bucketlist, 200
         else:
             abort(404, message='Bucketlist with id {} not found or not yours.'.format(
@@ -155,5 +154,5 @@ class SingleBucketlistEndpoint(Resource):
                     'message': 'Bucketlist with id {} successfully deleted.'.format(bucketlist_id)}
             return response, 200
         else:
-            abort(400, message='Bucketlist with id {} not found or not yours.'.format(
+            abort(404, message='Bucketlist with id {} not found or not yours.'.format(
                 bucketlist_id))
