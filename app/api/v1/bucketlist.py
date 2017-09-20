@@ -34,8 +34,7 @@ class BucketlistsEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
-    @bucketlist_api.response(400, 'No bucketlists found for specified user')
-    @bucketlist_api.response(404, 'No bucketlists found for specified user')
+    @bucketlist_api.response(200, 'No bucketlists found for specified user')
     def get(self):
         ''' Retrieve bucketlists belonging to user '''
         auth_user = g.user
@@ -78,8 +77,7 @@ class BucketlistsEndPoint(Resource):
 
             results.update(pages)
             return results, 200
-
-        return abort(400, message='No bucketlists found for specified user') 
+        return abort(404, message='No bucketlists found for specified user') 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
@@ -92,6 +90,8 @@ class BucketlistsEndPoint(Resource):
         arguments = request.get_json(force=True)
         name = arguments.get('name').strip()
         auth_user = g.user
+        if not name:
+            return abort(400, 'Name cannot be empty!')        
         try:
             bucketlist = Bucketlist(name=name, user_id=auth_user.id)
             if bucketlist.save_bucketlist():
@@ -116,7 +116,7 @@ class SingleBucketlistEndpoint(Resource):
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             return bucketlist, 200
-        abort(400, message='No bucketlist found with specified ID')
+        abort(404, message='No bucketlist found with specified ID')
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
@@ -128,7 +128,8 @@ class SingleBucketlistEndpoint(Resource):
         auth_user = g.user
         arguments = request.get_json(force=True)
         name = arguments.get('name').strip()
-
+        if not name:
+            return abort(400, 'Name cannot be empty!')
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
@@ -136,7 +137,7 @@ class SingleBucketlistEndpoint(Resource):
             bucketlist.save_bucketlist()
             return bucketlist, 200
         else:
-            abort(400, message='Bucketlist with id {} not found or not yours.'.format(
+            abort(404, message='Bucketlist with id {} not found or not yours.'.format(
                 bucketlist_id))
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
