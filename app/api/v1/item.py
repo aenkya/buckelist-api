@@ -38,7 +38,7 @@ class ItemEndpoint(Resource):
         ''' Add items to bucketlist '''
         auth_user = g.user
         arguments = request.get_json(force=True)
-        name = arguments.get('name')
+        name = arguments.get('name').strip() or None
         if not name:
             return abort(400, 'Name cannot be empty!')        
 
@@ -64,9 +64,10 @@ class ItemEndpoint(Resource):
         ''' retrieve bucketlist items '''
         auth_user = g.user
         bucketlist = Bucketlist.query.filter_by(
-            user_id=auth_user.id, id=bucketlist_id).first()
+            user_id=auth_user.id, id=bucketlist_id, active=True).first()
         if bucketlist:
-            return bucketlist.items, 200
+            items = Item.query.filter_by(bucketlist_id=bucketlist.id, active=True).all()
+            return items, 200
         return abort(404, 'Bucketlist item with id {} not found in the database'.format(bucketlist_id))
 
 
@@ -84,7 +85,7 @@ class SingleItemEndpoint(Resource):
         ''' Modify the item details'''
         auth_user = g.user
         arguments = request.get_json(force=True)
-        name, done = arguments.get('name') or None, arguments.get('done')       
+        name, done = arguments.get('name') or None, arguments.get('done')
 
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
@@ -97,7 +98,7 @@ class SingleItemEndpoint(Resource):
         if item:
             try:
                 if name:
-                    item.name = name
+                    item.name = name.strip()
                 item.done = done if done is not None else item.done
                 item.save()
                 return item, 200

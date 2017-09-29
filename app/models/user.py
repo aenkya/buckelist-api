@@ -30,7 +30,8 @@ class User(BaseModel):
 
     def exists(self):
         ''' Check if user exists '''
-        return True if User.query.filter_by(email=self.email).first() else False
+        user = User.query.filter_by(email=self.email).first()
+        return user if user else False
 
     def verify_password(self, password):
         ''' Method to verify that user's password matches password provided '''
@@ -71,10 +72,14 @@ class User(BaseModel):
 
     def save_user(self):
         ''' Method to save user '''
-        if not self.exists():
-            self.save()
-            return True
-        return False
+        user = self.exists()
+        if user:
+            if user.active:
+                return False
+            else:
+                user.active = True
+        self.save()
+        return True
 
     def __repr__(self):
         return '<User %r>' % self.name()

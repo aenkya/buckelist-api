@@ -11,10 +11,10 @@ class Config(object):
     __DB_NAME = os.getenv('DATABASE_URL') or "postgresql://localhost/bucketlist_api"
     BCRYPT_LOG_ROUNDS = 13
     SECRET_KEY = os.getenv('SECRET') or __SECRET
-    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 3000
+    AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 18000
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or __DB_NAME
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAX_PAGE_SIZE = os.getenv('MAX_PAGE_SIZE') or 30  # Maximum results per page    
+    MAX_PAGE_SIZE = os.getenv('MAX_PAGE_SIZE') or 2  # Maximum results per page    
 
 class DevelopmentConfig(Config):
     """Configurations for Development"""

@@ -3,6 +3,7 @@ from flask_restplus import abort, Resource, fields, Namespace, marshal_with
 from flask_restplus import marshal
 from sqlalchemy import desc
 from app.models.bucketlist import Bucketlist
+from app.models.item import Item
 from app.models.user import User
 from .item import item_fields
 from app.utils.utilities import auth
@@ -20,6 +21,7 @@ bucketlist_fields = bucketlist_api.model(
             required=True,
             description="Bucketlist name",
             example="test_bucketlist"),
+        'description': fields.String(description="Bucketlist description", example="test_description"),
         'date_created': fields.DateTime(required=False, attribute='date_created'),
         'date_modified': fields.DateTime(required=False, attribute='date_modified'),
         'created_by': fields.Integer(required=True, attribute='user_id'),
@@ -40,8 +42,9 @@ class BucketlistsEndPoint(Resource):
         auth_user = g.user
         search_term = request.args.get('q') or None
         limit = request.args.get('limit') or Config.MAX_PAGE_SIZE
-        page_limit = 100 if int(limit) > 100 else int(limit)
+        page_limit = 2 if int(limit) > 100 else int(limit)
         page = request.args.get('page') or 1
+        page = int(page)
 
         if page_limit < 1 or page < 1:
             return abort(400, 'Page or Limit cannot be negative values')
@@ -50,7 +53,7 @@ class BucketlistsEndPoint(Resource):
             order_by(desc(Bucketlist.date_created))
         if bucketlist_data.all():
             bucketlists = bucketlist_data
-
+            
             if search_term:
                 bucketlists = bucketlist_data.filter(
                     Bucketlist.name.ilike('%'+search_term+'%')
@@ -75,7 +78,7 @@ class BucketlistsEndPoint(Resource):
             if page < bucketlist_paged.pages:
                 pages['next_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page+1)
 
-            results.update(pages)
+            results.update(pages)          
             return results, 200
         return abort(404, message='No bucketlists found for specified user') 
 
@@ -88,17 +91,18 @@ class BucketlistsEndPoint(Resource):
     def post(self):
         ''' Create a bucketlist '''
         arguments = request.get_json(force=True)
-        name = arguments.get('name').strip()
+        name = arguments.get('name')or None
+        description = arguments.get('description') or None
+        if description:
+            description = description.strip()
         auth_user = g.user
         if not name:
-            return abort(400, 'Name cannot be empty!')        
-        try:
-            bucketlist = Bucketlist(name=name, user_id=auth_user.id)
-            if bucketlist.save_bucketlist():
-                return {'message': 'Bucketlist created successfully!'}, 201
-            return abort(409, message='Bucketlist already exists!')
-        except Exception as e:
-            abort(400, message='Failed to create new bucketlist -> {}'.format(e.message))
+            return abort(400, 'Name cannot be empty!')
+        name = name.strip()
+        bucketlist = Bucketlist(name=name, user_id=auth_user.id, description=description)
+        if bucketlist.save_bucketlist():
+            return {'message': 'Bucketlist created successfully!'}, 201
+        return abort(409, 'Bucketlist already exists!')
 
 
 @bucketlist_api.route('/<int:bucketlist_id>', endpoint='single_bucketlist')
@@ -127,16 +131,19 @@ class SingleBucketlistEndpoint(Resource):
         ''' Update bucketlist with given bucketlist_id '''
         auth_user = g.user
         arguments = request.get_json(force=True)
-        name = arguments.get('name').strip()
+        name = arguments.get('name')
+        description = arguments.get('description')
         bucketlist = Bucketlist.query.filter_by(
             id=bucketlist_id, user_id=auth_user.id, active=True).first()
         if bucketlist:
             if name:
-                bucketlist.name = name
+                bucketlist.name = name.strip()
+            if description:
+                bucketlist.description = description.strip()
             bucketlist.save()
             return bucketlist, 200
         else:
-            abort(404, message='Bucketlist with id {} not found or not yours.'.format(
+            abort(404, 'Bucketlist with id {} not found or not yours.'.format(
                 bucketlist_id))
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
