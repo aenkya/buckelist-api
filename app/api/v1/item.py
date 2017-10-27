@@ -18,7 +18,8 @@ item_fields = item_api.model(
         'date_created': fields.DateTime(required=False, attribute='date_created'),
         'date_modified': fields.DateTime(required=False, attribute='date_modified'),
         'bucketlist_id': fields.Integer(required=True),
-        'done': fields.Boolean()
+        'done': fields.Boolean(),
+        'active': fields.Boolean()
     }
 )
 

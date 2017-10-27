@@ -23,13 +23,16 @@ class Item(BaseModel):
     def save_item(self):
         ''' Method to save item '''
         item = self.exists()
-        if item:
+        if not item:
+            self.save()
+            return True
+        if item.name.lower() == self.name.lower():
             if item.active:
                 return False
             else:
                 item.active = True
-        self.save()
-        return True
+                item.save()
+                return True
 
     def exists(self):
         ''' Check if item exists '''
