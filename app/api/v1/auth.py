@@ -73,7 +73,7 @@ class AuthenticateUser(Resource):
     def post(self):
         ''' Method to handle POST request for User LOGIN '''
         arguments = request.get_json(force=True)
-        email, password = arguments.get('email').strip(), arguments.get('password').strip()
+        email, password = arguments.get('email').strip().lower(), arguments.get('password').strip()
 
         if not validate_email(email):
             return abort(400, message='Please provide valid email credentials.')

@@ -8,16 +8,25 @@ class Bucketlist(BaseModel):
     __table__name = 'bucketlist'
 
     name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255))
     items = db.relationship(
         'Item', cascade='all, delete', backref='item', uselist=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def save_bucketlist(self):
         ''' Method to save bucketlist '''
-        if not self.exists():
+        bucket = self.exists()
+        if not bucket:
             self.save()
             return True
-        return False
+        if bucket.name.lower() == self.name.lower():
+            if bucket.active:
+                return False
+            else:
+                bucket.active = True
+                bucket.description = self.description
+                bucket.save()
+                return True
 
     def delete_bucketlist(self, deep_delete=False):
         ''' Method to delete bucketlist '''
@@ -32,7 +41,8 @@ class Bucketlist(BaseModel):
 
     def exists(self):
         ''' Check if bucketlist exists '''
-        return True if Bucketlist.query.filter_by(name=self.name).first() else False
+        bucket = Bucketlist.query.filter_by(name=self.name).first()
+        return bucket if bucket else False
 
     def __repr__(self):
         return "<Bucketlist: {}>".format(self.name)

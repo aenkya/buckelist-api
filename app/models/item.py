@@ -22,14 +22,22 @@ class Item(BaseModel):
 
     def save_item(self):
         ''' Method to save item '''
-        if not self.exists():
+        item = self.exists()
+        if not item:
             self.save()
             return True
-        return False
+        if item.name.lower() == self.name.lower():
+            if item.active:
+                return False
+            else:
+                item.active = True
+                item.save()
+                return True
 
     def exists(self):
         ''' Check if item exists '''
-        return True if Item.query.filter_by(name=self.name).first() else False
+        item = Item.query.filter_by(name=self.name).first()
+        return item if item else False
 
     def __repr__(self):
         return "<Item: {}>".format(self.name)

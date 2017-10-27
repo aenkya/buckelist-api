@@ -37,6 +37,8 @@ def create_app(config_name):
 
     app.register_blueprint(api_v1)
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
     bcrypt.init_app(app)
 
     return app

@@ -13,8 +13,9 @@ for agents of mobile money services
 ## Demo
 You can request a demo from @elbertbiggs360 on twitter
 
-You can also test the API demo hosted at https://buckelist-api.herokuapp.com in Postman
+You can also test the API demo hosted at https://buckelist-api.herokuapp.com/api/v1/ in Postman
 
+Sample front end application consuming the API at [buckellist.herokuapp.com](https://buckellist.herokuapp.com/)
 ##Usage
 
 | EndPoint | Functionality | Public Access |
