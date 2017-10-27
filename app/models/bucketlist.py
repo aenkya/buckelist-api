@@ -16,13 +16,17 @@ class Bucketlist(BaseModel):
     def save_bucketlist(self):
         ''' Method to save bucketlist '''
         bucket = self.exists()
-        if bucket:
+        if not bucket:
+            self.save()
+            return True
+        if bucket.name.lower() == self.name.lower():
             if bucket.active:
                 return False
             else:
                 bucket.active = True
-        self.save()
-        return True
+                bucket.description = self.description
+                bucket.save()
+                return True
 
     def delete_bucketlist(self, deep_delete=False):
         ''' Method to delete bucketlist '''

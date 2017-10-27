@@ -1,7 +1,7 @@
 from flask import request, jsonify, g, url_for
 from flask_restplus import abort, Resource, fields, Namespace, marshal_with
 from flask_restplus import marshal
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from app.models.bucketlist import Bucketlist
 from app.models.item import Item
 from app.models.user import User
@@ -25,7 +25,8 @@ bucketlist_fields = bucketlist_api.model(
         'date_created': fields.DateTime(required=False, attribute='date_created'),
         'date_modified': fields.DateTime(required=False, attribute='date_modified'),
         'created_by': fields.Integer(required=True, attribute='user_id'),
-        'items': fields.Nested(item_fields)
+        'items': fields.Nested(item_fields),
+        'active': fields.Boolean
     }
 )
 
@@ -55,8 +56,8 @@ class BucketlistsEndPoint(Resource):
             bucketlists = bucketlist_data
             
             if search_term:
-                bucketlists = bucketlist_data.filter(
-                    Bucketlist.name.ilike('%'+search_term+'%')
+                bucketlists = bucketlist_data.filter(or_(Bucketlist.name.ilike('%'+search_term+'%'),
+                    Bucketlist.description.ilike('%'+search_term+'%'))
                 )
 
             bucketlist_paged = bucketlists.paginate(
